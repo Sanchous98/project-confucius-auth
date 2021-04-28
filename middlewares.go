@@ -1,6 +1,7 @@
 package auth
 
 import (
+	"github.com/Sanchous98/project-confucius-base/stdlib"
 	"github.com/dgrijalva/jwt-go"
 	"github.com/valyala/fasthttp"
 	"strings"
@@ -11,10 +12,9 @@ const (
 	corsAllowMethods     = "HEAD,GET,POST,PUT,DELETE,OPTIONS"
 	corsAllowOrigin      = "*"
 	corsAllowCredentials = "true"
-	DefaultRealm         = "API"
+	defaultRealm         = "API"
 )
 
-type Middleware func(fasthttp.RequestHandler) fasthttp.RequestHandler
 type AuthenticationFunc func(*fasthttp.RequestCtx) bool
 type JWTTokenHandler func(*fasthttp.RequestCtx, *jwt.Token) error
 type VerificationKeyHandler func(ctx *fasthttp.RequestCtx) string
@@ -30,7 +30,7 @@ func CORS(next fasthttp.RequestHandler) fasthttp.RequestHandler {
 	}
 }
 
-func NewAuthMiddleware(authFunc AuthenticationFunc) Middleware {
+func NewAuthMiddleware(authFunc AuthenticationFunc) stdlib.Middleware {
 	return func(h fasthttp.RequestHandler) fasthttp.RequestHandler {
 		return func(ctx *fasthttp.RequestCtx) {
 			if authFunc(ctx) {
@@ -60,7 +60,7 @@ func JWT(verificationKey string, options ...JWTOptions) fasthttp.RequestHandler 
 		opt = options[0]
 	}
 	if opt.Realm == "" {
-		opt.Realm = DefaultRealm
+		opt.Realm = defaultRealm
 	}
 	if opt.SigningMethod == "" {
 		opt.SigningMethod = "HS256"
