@@ -7,12 +7,12 @@ import (
 	"strings"
 )
 
-const (
-	corsAllowHeaders     = "authorization"
-	corsAllowMethods     = "HEAD,GET,POST,PUT,DELETE,OPTIONS"
-	corsAllowOrigin      = "*"
-	corsAllowCredentials = "true"
-	defaultRealm         = "API"
+var (
+	CORSAllowHeaders     = "authorization"
+	CORSAllowMethods     = "HEAD,GET,POST,PUT,DELETE,OPTIONS"
+	CORSAllowOrigin      = "*"
+	CORSAllowCredentials = "true"
+	DefaultRealm         = "API"
 )
 
 type AuthenticationFunc func(*fasthttp.RequestCtx) bool
@@ -21,10 +21,10 @@ type VerificationKeyHandler func(ctx *fasthttp.RequestCtx) string
 
 func CORS(next fasthttp.RequestHandler) fasthttp.RequestHandler {
 	return func(ctx *fasthttp.RequestCtx) {
-		ctx.Response.Header.Set("Access-Control-Allow-Credentials", corsAllowCredentials)
-		ctx.Response.Header.Set("Access-Control-Allow-Headers", corsAllowHeaders)
-		ctx.Response.Header.Set("Access-Control-Allow-Methods", corsAllowMethods)
-		ctx.Response.Header.Set("Access-Control-Allow-Origin", corsAllowOrigin)
+		ctx.Response.Header.Set("Access-Control-Allow-Credentials", CORSAllowCredentials)
+		ctx.Response.Header.Set("Access-Control-Allow-Headers", CORSAllowHeaders)
+		ctx.Response.Header.Set("Access-Control-Allow-Methods", CORSAllowMethods)
+		ctx.Response.Header.Set("Access-Control-Allow-Origin", CORSAllowOrigin)
 
 		next(ctx)
 	}
@@ -60,7 +60,7 @@ func JWT(verificationKey string, options ...JWTOptions) fasthttp.RequestHandler 
 		opt = options[0]
 	}
 	if opt.Realm == "" {
-		opt.Realm = defaultRealm
+		opt.Realm = DefaultRealm
 	}
 	if opt.SigningMethod == "" {
 		opt.SigningMethod = "HS256"
